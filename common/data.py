@@ -17,7 +17,7 @@ from . import argbind
 from . import utils
 
 MAX_SOURCE_TIME = 10000
-LABELS = ['bass', 'drums', 'other', 'vocals']
+LABELS = ['background', 'music', 'speech']
 
 def download():
     """Downloads required files for tutorial.
@@ -147,7 +147,7 @@ def symlink(
 
 @argbind.bind_to_parser()
 def prepare_musdb(
-    folder : str = 'data/MUSDB18_7s/', 
+    folder : str = 'data/MSBDB24/', 
     musdb_root : str = None, 
 ):
     """Prepares MUSDB data which is organized as .mp4 
@@ -173,7 +173,7 @@ def prepare_musdb(
             split = None
             target_folder = 'test'
     
-        musdb = nussl.datasets.MUSDB18(
+        msbdb = nussl.datasets.MUSDB18(
             folder=musdb_root, download=download,
             split=split, subsets=subsets)
 
@@ -182,7 +182,7 @@ def prepare_musdb(
 
         logging.info(f"Saving data to {_folder}")
 
-        for item in tqdm.tqdm(musdb):
+        for item in tqdm.tqdm(msbdb):
             song_name = item['mix'].file_name
             for key, val in item['sources'].items():
                 src_path = _folder / key 
@@ -216,10 +216,10 @@ def mixer(
     sample_rate : int = 44100,
     ref_db : Union[float, List] = [-30, -10],
     n_channels : int = 1,
-    master_label : str = 'vocals',
+    master_label : str = 'speech',
     source_file : List = ['choose', []],
     snr : List = ('uniform', -5, 5),
-    target_instrument : str = 'vocals',
+    target_instrument : str = 'speech',
     target_snr_boost : float = 0.0,
     pitch_shift : List = ('uniform', -2, 2),
     time_stretch : List = ('uniform', 0.9, 1.1),
@@ -299,7 +299,7 @@ class MUSDBMixer():
         sample_rate : int,
         ref_db : Union[float, tuple],
         n_channels : int = 1,
-        master_label : str = 'vocals',
+        master_label : str = 'speech',
         # Event parameters
         source_file=('choose', []),
         snr=('uniform', -5, 5),
@@ -311,7 +311,7 @@ class MUSDBMixer():
         quick_pitch_time_prob=1.0,
         overfit=False,
         overfit_seed=0,
-        target_instrument='vocals',
+        target_instrument='speech',
         target_snr_boost=0,
     ):
         pitch_shift = (
@@ -364,7 +364,7 @@ class MUSDBMixer():
         return sc
 
     def _add_events(self, sc, event_parameters, event=None):
-        labels = ['vocals', 'drums', 'bass', 'other']
+        labels = ['speech', 'music', 'background']
         snr_dist = event_parameters.pop('snr')
         for label in labels:
             _snr_dist = list(snr_dist).copy()
@@ -374,7 +374,7 @@ class MUSDBMixer():
             event_parameters['label'] = ('const', label)
             if event:
                 event_parameters['source_file'] = (
-                    'const', event.source_file.replace('vocals', label)
+                    'const', event.source_file.replace('speech', label)
                 )
             sc.add_event(snr=tuple(_snr_dist), **event_parameters)
 
