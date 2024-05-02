@@ -3,8 +3,6 @@ jupyterlab
 matplotlib
 numpy
 librosa
-# nussl
-scaper==1.6.4
 numpydoc
 pyyaml
 gradio
