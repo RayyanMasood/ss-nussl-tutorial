@@ -3,7 +3,7 @@ jupyterlab
 matplotlib
 numpy
 librosa
-nussl
+# nussl
 scaper==1.6.4
 numpydoc
 pyyaml
