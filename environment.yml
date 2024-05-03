@@ -12,7 +12,7 @@ dependencies:
     - numpy
     - matplotlib
     - librosa
-    - nussl
+    # - nussl
     - scaper
     - soxbindings
     - numpydoc
