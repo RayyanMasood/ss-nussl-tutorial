@@ -2,7 +2,7 @@ jupyter-book
 jupyterlab
 matplotlib
 numpy
-librosa==0.8.1
+librosa==0.10.1
 numpydoc
 pyyaml
 gradio
